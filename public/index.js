@@ -1,10 +1,9 @@
 const socket = io('/')
-console.log(`Welcome to the server!`)
 const videoGridDom = document.getElementById('video-grid')
 let videoDom = document.createElement('video')
 videoDom.muted = true
 
-var peer = new Peer(undefined, {
+const myPeer = new Peer(undefined, {
   path: '/peerjs',
   host: '/',
   port: 2024
@@ -18,20 +17,36 @@ navigator.mediaDevices.getUserMedia({
 }).then(stream => {
   videoStream = stream
   addVideoStream(videoDom, stream)
+  myPeer.on('call', call => {
+    call.answer(stream)
+    const video = document.createElement('video')
+    call.on('stream', userVideoStream => {
+      addVideoStream(video, userVideoStream)
+    })
+  })
+
+  socket.on('user-connected', (userId) => {
+    // delay the call
+    setTimeout(() => {
+      connectToNewUser(userId, stream)
+    }, 1500)
+  })
 })
 
-socket.emit('join-room', WINDOW_ROOM_ID) 
-
-socket.on('user-connected', () => {
-  console.log(`????`)
-  connectToNewUser()
-})
-
-const connectToNewUser = () => {
-  console.log('new user connected')
+const connectToNewUser = (userId, stream) => {
+  const call = myPeer.call(userId, stream)
+  const video = document.createElement('video')
+  call.on('stream', userVideoStream => {
+    addVideoStream(video, userVideoStream)
+  })
 }
 
-const addVideoStream = (video, stream) => {
+myPeer.on('open', id => {
+  socket.emit('join-room', WINDOW_ROOM_ID, id) 
+})
+
+
+function addVideoStream(video, stream) {
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
