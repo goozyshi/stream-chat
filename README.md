@@ -25,3 +25,10 @@ app.set("view engine", "ejs");
 ```bash
   pnpm install uuid --save
 ```
+
+## Chat
+
+```bash
+  pnpm install socket.io --save
+  pnpm install peer --save
+```
