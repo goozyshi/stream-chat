@@ -36,6 +36,10 @@ io.on('connection', socket => {
     socket.on('message', msg => {
       io.to(roomId).emit('createMessage', msg)
     })
+    // 断开连接
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('user-disconnected', userId)
+    })
   })
 })
 

@@ -75,3 +75,45 @@ const receiveUserMessage = () => {
     $('.chat-messages').append(`<li class="user-message"><b>用户</b>--<span class="time">${now}</span><br/>${msg}</li>`)
   })
 }
+
+
+const changeMuteStatus = () => {
+  const enabled = videoStream.getAudioTracks()[0].enabled;
+  let html = `
+    <i class="iconfont icon-huatong"></i>
+    <span>静音</span>
+  `
+  if (enabled) {
+    videoStream.getAudioTracks()[0].enabled = false;
+  } else {
+    videoStream.getAudioTracks()[0].enabled = true;
+  }
+  if (enabled) {
+    html = `
+    <i class="iconfont icon-jingyin"></i>
+    <span>开启话筒</span>
+    `
+  }
+
+  document.querySelector('.control__button--voice').innerHTML = html;
+}
+
+const changeVideoStatus = () => {
+  let html =`
+    <i class="iconfont icon-shexiangtou"></i>
+    <span>视频</span>
+  `
+  let enabled = videoStream.getVideoTracks()[0].enabled;
+  if (enabled) {
+    videoStream.getVideoTracks()[0].enabled = false;
+  } else {
+    videoStream.getVideoTracks()[0].enabled = true;
+  }
+  if (enabled) {
+    html = `
+      <i class="iconfont icon-shexiangtou_guanbi"></i>
+      <span>开启摄像头</span>
+    `
+  }
+  document.querySelector('.control__button--video').innerHTML = html;
+}
