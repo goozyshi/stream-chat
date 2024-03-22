@@ -31,6 +31,8 @@ navigator.mediaDevices.getUserMedia({
       connectToNewUser(userId, stream)
     }, 1500)
   })
+
+  receiveUserMessage()
 })
 
 const connectToNewUser = (userId, stream) => {
@@ -40,6 +42,7 @@ const connectToNewUser = (userId, stream) => {
     addVideoStream(video, userVideoStream)
   })
 }
+
 
 myPeer.on('open', id => {
   socket.emit('join-room', WINDOW_ROOM_ID, id) 
@@ -52,4 +55,23 @@ function addVideoStream(video, stream) {
     video.play()
   })
   videoGridDom.append(video)
+}
+
+
+const receiveUserMessage = () => {
+  // 用户输入
+  const textDom = $('input')
+  $('html').keydown(e => {
+    if (e.which === 13 && textDom.val() !== '') {
+      console.log(textDom.val())
+      socket.emit('message', textDom.val())
+      textDom.val('')
+    }
+  })
+
+  socket.on('createMessage', msg => {
+    // console.log('server MSG!!!', msg)
+    const now = Date().toLocaleString().substring(0, 24)
+    $('.chat-messages').append(`<li class="user-message"><b>用户</b>--<span class="time">${now}</span><br/>${msg}</li>`)
+  })
 }
