@@ -1,8 +1,8 @@
-# stream-chat
+# stream-chat 视频聊天室
 
 Description: A platform can be used to communicate with facetime。
 
-Tech Stack: Node.js + Express
+Tech Stack: Node.js + Express + socket.io
 
 ## Install
 
@@ -32,3 +32,13 @@ app.set("view engine", "ejs");
   pnpm install socket.io --save
   pnpm install peer --save
 ```
+
+## 视频
+![](./pics/alone.jpg)
+
+## 聊天室
+![](./pics/chating.jpg)
+
+## 功能控制
+
+![](./pics/chatroom.jpg)
