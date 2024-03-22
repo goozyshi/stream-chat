@@ -9,6 +9,7 @@ const myPeer = new Peer(undefined, {
   port: 2024
 });
 
+const members = {}
 let videoStream = null;
 
 navigator.mediaDevices.getUserMedia({
@@ -35,12 +36,22 @@ navigator.mediaDevices.getUserMedia({
   receiveUserMessage()
 })
 
+
+socket.on('user-disconnected', userId => {
+  if (members[userId]) members[userId].close()
+})
+
+
 const connectToNewUser = (userId, stream) => {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
   call.on('stream', userVideoStream => {
     addVideoStream(video, userVideoStream)
   })
+  call.on('close', () => {
+    video.remove()
+  })
+  members[userId] = call
 }
 
 
@@ -63,14 +74,12 @@ const receiveUserMessage = () => {
   const textDom = $('input')
   $('html').keydown(e => {
     if (e.which === 13 && textDom.val() !== '') {
-      console.log(textDom.val())
       socket.emit('message', textDom.val())
       textDom.val('')
     }
   })
 
   socket.on('createMessage', msg => {
-    // console.log('server MSG!!!', msg)
     const now = Date().toLocaleString().substring(0, 24)
     $('.chat-messages').append(`<li class="user-message"><b>用户</b>--<span class="time">${now}</span><br/>${msg}</li>`)
   })
@@ -116,4 +125,25 @@ const changeVideoStatus = () => {
     `
   }
   document.querySelector('.control__button--video').innerHTML = html;
+}
+
+const jumpToGithub = () => {
+  window.location.href = 'https://github.com/goozyshi/stream-chat'
+}
+
+const openChatBox  = () => {
+  // 判断container__right是否有detactive 样式
+  if ($('.container__right').hasClass('detactive')) {
+    // 更改container__left 的flex属性
+    $('.container__left').css('flex', '0.8')
+    // 更改container__right 的flex属性
+    $('.container__right').css('flex', '0.2')
+    // 更改container__right 的detactive样式
+    $('.container__right').removeClass('detactive')
+    $('.icon-chat').css('color', 'green')
+  } else {
+    $('.container__left').css('flex', '1')
+    $('.icon-chat').css('color', '#f5f5f5')
+    $('.container__right').addClass('detactive')
+  }
 }

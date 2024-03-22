@@ -31,8 +31,12 @@
             <span>静音</span>
           </div>
         </div>
-        <div class="control__block">
-          <div class="control__button">
+        <div class="controlbar__block">
+          <div class="control__button" onclick="jumpToGithub()">
+            <i class="iconfont icon-github"></i>
+            <span>Github</span>
+          </div>
+          <div class="control__button control__button--chat" onclick="openChatBox()">
             <i class="iconfont icon-chat"></i>
             <span>聊天室</span>
           </div>
@@ -44,7 +48,7 @@
         </div>
       </div>
     </div>
-    <div class="container__right">
+    <div class="container__right detactive">
       <div class="chat__header">
         <h6>聊天室</h6>
       </div>
